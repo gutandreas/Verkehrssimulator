@@ -1,3 +1,4 @@
+import math
 import os.path
 import random
 
@@ -14,38 +15,58 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.flip()
 pygame.display.set_caption("Verkehrssimulator")
 
+CAR_DIMENSIONS = (20, 40)
+
 BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
 BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
 CAR_PICTURE_RED = pygame.image.load(os.path.join("bilder", "auto_rot.png"))
-CAR_PICTURE_RED = pygame.transform.scale(CAR_PICTURE_RED, (20, 40))
+CAR_PICTURE_RED = pygame.transform.scale(CAR_PICTURE_RED, CAR_DIMENSIONS)
 CAR_PICTURE_YELLOW = pygame.image.load(os.path.join("bilder", "auto_gelb.png"))
-CAR_PICTURE_YELLOW = pygame.transform.scale(CAR_PICTURE_YELLOW, (20, 40))
+CAR_PICTURE_YELLOW = pygame.transform.scale(CAR_PICTURE_YELLOW, CAR_DIMENSIONS)
 CAR_PICTURE_BLUE = pygame.image.load(os.path.join("bilder", "auto_blau.png"))
-CAR_PICTURE_BLUE = pygame.transform.scale(CAR_PICTURE_BLUE, (20, 40))
+CAR_PICTURE_BLUE = pygame.transform.scale(CAR_PICTURE_BLUE, CAR_DIMENSIONS)
 
 CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE]
 
-start1 = [width * 0.3, -50]
-start2 = [width * 0.47, -50]
-start3 = [width * 0.635, -50]
-start4 = [width, height * 0.45]
-start5 = [width * 0.67, height+50]
-start6 = [width * 0.5, height+50]
-start7 = [width * 0.34, height+50]
-start8 = [-50, height * 0.51]
-
+SPRITES = pygame.sprite.Group()
 
 #start4 = [width / 2.05, -50]
 
-frequency = 50
+frequency = 100
 speed = 1
+objects = []
+distance = 15
 
 
-class Car():
+class Car(pygame.sprite.Sprite):
 
-  def __init__(self, rectangle, direction):
-    self.rectangle = rectangle
-    self.direction = direction
+  def __init__(self, start):
+    pygame.sprite.Sprite.__init__(self)
+    if start == 1:
+      start = [width * 0.3, -50]
+      self.direction = 1
+    elif start == 2:
+      start = [width * 0.47, -50]
+      self.direction = 1
+    elif start == 3:
+      start = [width * 0.635, -50]
+      self.direction = 1
+    elif start == 4:
+      start = [width, height * 0.45]
+      self.direction = 2
+    elif start == 5:
+      start = [width * 0.67, height + 50]
+      self.direction = 3
+    elif start == 6:
+      start = [width * 0.5, height + 50]
+      self.direction = 3
+    elif start == 7:
+      start = [width * 0.34, height + 50]
+      self.direction = 3
+    else:
+      start = [-50, height * 0.51]
+      self.direction = 4
+
     if self.direction == 1:
       self.picture = pygame.transform.rotate(CAR_PICTURES[random.randrange(len(CAR_PICTURES))].copy(), 180)
     elif self.direction == 2:
@@ -55,22 +76,37 @@ class Car():
     else:
       self.picture = pygame.transform.rotate(CAR_PICTURES[random.randrange(len(CAR_PICTURES))].copy(), 270)
 
+    self.rect = self.picture.get_rect()
+    self.rect.x = start[0]
+    self.rect.y = start[1]
+
+
+
   def move(self, amount):
-    if self.direction == 1:
-      self.rectangle.y += amount
-    elif self.direction == 2:
-      self.rectangle.x -= amount
-    elif self.direction == 3:
-      self.rectangle.y -= amount
-    else:
-      self.rectangle.x += amount
+    road_free = True
+
+    collision_with = pygame.sprite.spritecollide(self, SPRITES, False)
+    collision_with.remove(self)
+
+    if len(collision_with) > 0:
+      road_free = False
+
+    if road_free:
+      if self.direction == 1:
+        self.rect.y += amount
+      elif self.direction == 2:
+        self.rect.x -= amount
+      elif self.direction == 3:
+        self.rect.y -= amount
+      else:
+        self.rect.x += amount
 
 
 def draw_screen(objects):
   screen.fill(WHITE)
   screen.blit(BACKGROUND, (0,0))
-  for o in objects:
-    screen.blit(o.picture, (o.rectangle.x, o.rectangle.y))
+  for s in SPRITES:
+    screen.blit(s.picture, (s.rect.x, s.rect.y))
   pygame.display.update()
 
 
@@ -87,7 +123,6 @@ def main():
   running = True
   clock = pygame.time.Clock()
 
-  objects = []
 
   counter = 0
 
@@ -96,14 +131,12 @@ def main():
     clock.tick(FPS)
 
     if counter == 0:
-      objects.append(Car(pygame.Rect(start1[0], start1[1], 200, 200), 1))
-      objects.append(Car(pygame.Rect(start2[0], start2[1], 200, 200), 1))
-      objects.append(Car(pygame.Rect(start3[0], start3[1], 200, 200), 1))
-      objects.append(Car(pygame.Rect(start4[0], start4[1], 200, 200), 2))
-      objects.append(Car(pygame.Rect(start5[0], start5[1], 200, 200), 3))
-      objects.append(Car(pygame.Rect(start6[0], start6[1], 200, 200), 3))
-      objects.append(Car(pygame.Rect(start7[0], start7[1], 200, 200), 3))
-      objects.append(Car(pygame.Rect(start8[0], start8[1], 200, 200), 4))
+      for i in range(1,9,1):
+        car = Car(i)
+        SPRITES.add(car)
+        objects.append(car)
+
+
 
     counter += 1
 
