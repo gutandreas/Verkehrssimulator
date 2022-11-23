@@ -90,6 +90,17 @@ class Car(pygame.sprite.Sprite):
 
     if len(collision_with) > 0:
       road_free = False
+      if self.direction == 1:
+        point_to_check = self.rect.midbottom
+      elif self.direction == 2:
+        point_to_check = self.rect.midleft
+      elif self.direction == 3:
+        point_to_check = self.rect.midtop
+      else:
+        point_to_check = self.rect.midright
+
+      if not collision_with[0].rect.collidepoint(point_to_check):
+        road_free = True
 
     if road_free:
       if self.direction == 1:
