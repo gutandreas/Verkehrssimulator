@@ -15,7 +15,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.flip()
 pygame.display.set_caption("Verkehrssimulator")
 
-CAR_DIMENSIONS = (20, 40)
+CAR_DIMENSIONS = (20, 35)
 
 BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
 BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
@@ -25,18 +25,27 @@ CAR_PICTURE_YELLOW = pygame.image.load(os.path.join("bilder", "auto_gelb.png"))
 CAR_PICTURE_YELLOW = pygame.transform.scale(CAR_PICTURE_YELLOW, CAR_DIMENSIONS)
 CAR_PICTURE_BLUE = pygame.image.load(os.path.join("bilder", "auto_blau.png"))
 CAR_PICTURE_BLUE = pygame.transform.scale(CAR_PICTURE_BLUE, CAR_DIMENSIONS)
+CAR_PICTURE_CYAN = pygame.image.load(os.path.join("bilder", "auto_tuerkis.png"))
+CAR_PICTURE_CYAN = pygame.transform.scale(CAR_PICTURE_CYAN, CAR_DIMENSIONS)
+CAR_PICTURE_GREEN = pygame.image.load(os.path.join("bilder", "auto_gruen.png"))
+CAR_PICTURE_GREEN = pygame.transform.scale(CAR_PICTURE_GREEN, CAR_DIMENSIONS)
 
-CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE]
+CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE, CAR_PICTURE_GREEN, CAR_PICTURE_CYAN]
 
-SPRITES = pygame.sprite.Group()
+SIGNAL_1 = pygame.image.load(os.path.join("bilder", "ampel_rot.png"))
+
+CARS = pygame.sprite.Group()
+SIGNALS = pygame.sprite.Group()
 
 #start4 = [width / 2.05, -50]
 
 frequency = 100
 speed = 1
-objects = []
 distance = 15
 
+class Signal(pygame.sprite.Sprite):
+  def __init__(self, start):
+    pygame.sprite.Sprite.__init__(self)
 
 class Car(pygame.sprite.Sprite):
 
@@ -85,7 +94,7 @@ class Car(pygame.sprite.Sprite):
   def move(self, amount):
     road_free = True
 
-    collision_with = pygame.sprite.spritecollide(self, SPRITES, False)
+    collision_with = pygame.sprite.spritecollide(self, CARS, False)
     collision_with.remove(self)
 
     if len(collision_with) > 0:
@@ -116,8 +125,8 @@ class Car(pygame.sprite.Sprite):
 def draw_screen(objects):
   screen.fill(WHITE)
   screen.blit(BACKGROUND, (0,0))
-  for s in SPRITES:
-    screen.blit(s.picture, (s.rect.x, s.rect.y))
+  for c in CARS:
+    screen.blit(c.picture, (c.rect.x, c.rect.y))
   pygame.display.update()
 
 
@@ -144,17 +153,12 @@ def main():
     if counter == 0:
       for i in range(1,9,1):
         car = Car(i)
-        SPRITES.add(car)
-        objects.append(car)
-
-
+        CARS.add(car)
 
     counter += 1
 
-
-
-    for o in objects:
-      o.move(speed)
+    for c in CARS:
+      c.move(speed)
 
     for event in pygame.event.get():
 
@@ -176,7 +180,7 @@ def main():
         running = False
 
 
-    draw_screen(objects)
+    draw_screen(CARS)
 
     if counter >= frequency:
       counter = 0
