@@ -5,7 +5,7 @@ import random
 import pygame
 import kivy
 from kivy.uix.slider import Slider
-
+from pygame import color, rect
 
 WHITE = (255, 255, 255)
 FPS = 30
@@ -44,6 +44,7 @@ SIGNALS = pygame.sprite.Group()
 SIGNALS_POS_1 = []
 SIGNALS_POS_2 = []
 SIGNALS_POS_3 = []
+STOP_AREAS = pygame.sprite.Group()
 
 #start4 = [width / 2.05, -50]
 
@@ -60,6 +61,10 @@ class Signal(pygame.sprite.Sprite):
 
     signal_distance = 100
 
+
+    self.stop_area = StopArea((20, 20), (30, 30))
+    STOP_AREA_DIMENSION = (30, 30)
+
     if position == 1:
       self.position = [width*0.318, height*0.465]
     elif position == 2:
@@ -70,15 +75,19 @@ class Signal(pygame.sprite.Sprite):
     if direction == 1:
       self.position = [self.position[0] - signal_distance*0.65, self.position[1] - signal_distance*0.8]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
+      self.stop_area = StopArea((self.position[0] + 50, self.position[1] + 20), STOP_AREA_DIMENSION)
     elif direction == 2:
       self.position = [self.position[0] + signal_distance*0.85, self.position[1] - signal_distance*0.5]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
+      self.stop_area = StopArea((self.position[0], self.position[1] + 40), STOP_AREA_DIMENSION)
     elif direction == 3:
       self.position = [self.position[0] + signal_distance*0.85, self.position[1] + signal_distance*1]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
+      self.stop_area = StopArea((self.position[0] - 50, self.position[1]), STOP_AREA_DIMENSION)
     elif direction == 4:
       self.position = [self.position[0] - signal_distance*0.95, self.position[1] + signal_distance*1]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
+      self.stop_area = StopArea((self.position[0] + 30, self.position[1] - 40), STOP_AREA_DIMENSION)
 
     self.rect = self.picture.get_rect()
     self.rect.x = self.position[0]
@@ -91,30 +100,46 @@ class Signal(pygame.sprite.Sprite):
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 180)
+        STOP_AREAS.remove(self.stop_area)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
+        STOP_AREAS.add(self.stop_area)
     elif self.direction == 2:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 90)
+        STOP_AREAS.remove(self.stop_area)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
+        STOP_AREAS.add(self.stop_area)
     elif self.direction == 3:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 0)
+        STOP_AREAS.remove(self.stop_area)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
+        STOP_AREAS.add(self.stop_area)
     elif self.direction == 4:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 270)
+        STOP_AREAS.remove(self.stop_area)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
+        STOP_AREAS.add(self.stop_area)
+
+class StopArea(pygame.sprite.Sprite):
+
+  def __init__(self, position, dimensions):
+    pygame.sprite.Sprite.__init__(self)
+    self.rect = pygame.Rect(position, dimensions)
+    STOP_AREAS.add(self)
+    #pygame.draw.rect(screen, (255, 0, 0), self.rect) #draw for debugging
 
 
 class Car(pygame.sprite.Sprite):
@@ -165,9 +190,14 @@ class Car(pygame.sprite.Sprite):
 
   def move(self, amount):
     road_free = True
+    signal_green = True
 
     collision_with = pygame.sprite.spritecollide(self, CARS, False)
     collision_with.remove(self)
+
+    touches_stop_area = pygame.sprite.spritecollide(self, STOP_AREAS, False)
+    if len(touches_stop_area) > 0:
+      signal_green = False
 
     if len(collision_with) > 0:
       road_free = False
@@ -183,7 +213,7 @@ class Car(pygame.sprite.Sprite):
       if not collision_with[0].rect.collidepoint(point_to_check):
         road_free = True
 
-    if road_free:
+    if road_free and signal_green:
       if self.direction == 1:
         self.rect.y += amount
       elif self.direction == 2:
@@ -263,7 +293,7 @@ def main():
       SIGNALS_POS_3[pos_3].change_color("green")
 
 
-    if counter == 30:
+    if counter == 50:
       SIGNALS_POS_1[pos_1].change_color("red")
       SIGNALS_POS_2[pos_2].change_color("red")
       SIGNALS_POS_3[pos_3].change_color("red")
