@@ -16,6 +16,7 @@ pygame.display.flip()
 pygame.display.set_caption("Verkehrssimulator")
 
 CAR_DIMENSIONS = (20, 35)
+SIGNAL_DIMENSIONS = (30, 60)
 
 BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
 BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
@@ -32,7 +33,8 @@ CAR_PICTURE_GREEN = pygame.transform.scale(CAR_PICTURE_GREEN, CAR_DIMENSIONS)
 
 CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE, CAR_PICTURE_GREEN, CAR_PICTURE_CYAN]
 
-SIGNAL_1 = pygame.image.load(os.path.join("bilder", "ampel_rot.png"))
+SIGNAL = pygame.image.load(os.path.join("bilder", "ampel_rot.png"))
+SIGNAL = pygame.transform.scale(SIGNAL, SIGNAL_DIMENSIONS)
 
 CARS = pygame.sprite.Group()
 SIGNALS = pygame.sprite.Group()
@@ -44,8 +46,38 @@ speed = 1
 distance = 15
 
 class Signal(pygame.sprite.Sprite):
-  def __init__(self, start):
+  def __init__(self, position, direction):
     pygame.sprite.Sprite.__init__(self)
+
+    SIGNALS.add(self)
+
+    signal_distance = 100
+
+    if position == 1:
+      self.position = [width*0.317, height*0.465]
+    elif position == 2:
+      self.position = [width * 0.48, height * 0.465]
+    elif position == 3:
+      self.position = [width * 0.65, height * 0.465]
+
+    if direction == 1:
+      self.position = [self.position[0] - signal_distance*0.75, self.position[1] - signal_distance*0.9]
+      self.picture = pygame.transform.rotate(SIGNAL, 180)
+    elif direction == 2:
+      self.position = [self.position[0] + signal_distance*0.8, self.position[1] - signal_distance*0.6]
+      self.picture = pygame.transform.rotate(SIGNAL, 90)
+    elif direction == 3:
+      self.position = [self.position[0] + signal_distance*0.8, self.position[1] + signal_distance*0.95]
+      self.picture = pygame.transform.rotate(SIGNAL, 0)
+    elif direction == 4:
+      self.position = [self.position[0] - signal_distance*1, self.position[1] + signal_distance*0.95]
+      self.picture = pygame.transform.rotate(SIGNAL, 270)
+
+    self.rect = self.picture.get_rect()
+    self.rect.x = self.position[0]
+    self.rect.y = self.position[1]
+
+
 
 class Car(pygame.sprite.Sprite):
 
@@ -88,6 +120,7 @@ class Car(pygame.sprite.Sprite):
     self.rect = self.picture.get_rect()
     self.rect.x = start[0]
     self.rect.y = start[1]
+    CARS.add(self)
 
 
 
@@ -122,11 +155,13 @@ class Car(pygame.sprite.Sprite):
         self.rect.x += amount
 
 
-def draw_screen(objects):
+def draw_screen():
   screen.fill(WHITE)
   screen.blit(BACKGROUND, (0,0))
   for c in CARS:
     screen.blit(c.picture, (c.rect.x, c.rect.y))
+  for s in SIGNALS:
+    screen.blit(s.picture, (s.rect.x, s.rect.y))
   pygame.display.update()
 
 
@@ -143,8 +178,12 @@ def main():
   running = True
   clock = pygame.time.Clock()
 
+  for i in range(1,4,1):
+    for j in range(1,5,1):
+      Signal(i, j)
 
   counter = 0
+
 
   while running:
 
@@ -152,8 +191,7 @@ def main():
 
     if counter == 0:
       for i in range(1,9,1):
-        car = Car(i)
-        CARS.add(car)
+        Car(i)
 
     counter += 1
 
@@ -180,7 +218,7 @@ def main():
         running = False
 
 
-    draw_screen(CARS)
+    draw_screen()
 
     if counter >= frequency:
       counter = 0
