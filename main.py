@@ -86,7 +86,6 @@ class Signal(pygame.sprite.Sprite):
 
   def change_color(self, color):
     self.picture = SIGNAL_PICTURE_GREEN
-    print("green")
 
     if self.direction == 1:
       if color == "green":
@@ -122,6 +121,7 @@ class Car(pygame.sprite.Sprite):
 
   def __init__(self, start):
     pygame.sprite.Sprite.__init__(self)
+    self.distance = 0
     if start == 1:
       start = [width * 0.31, -50]
       self.direction = 1
@@ -192,7 +192,18 @@ class Car(pygame.sprite.Sprite):
         self.rect.y -= amount
       else:
         self.rect.x += amount
+      self.distance += amount
 
+    if check_if_left_screen(self):
+      CARS.remove(self)
+
+def check_if_left_screen(car):
+    started = car.distance > 100
+    top = car.rect.y < 0
+    right = car.rect.x > width
+    bottom = car.rect.y > height
+    left = car.rect.x < 0
+    return started and (top or right or bottom or left)
 
 def draw_screen():
   screen.fill(WHITE)
