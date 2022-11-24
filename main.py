@@ -97,10 +97,10 @@ class Signal(pygame.sprite.Sprite):
     elif self.direction == 2:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
-        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 270)
+        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 90)
       else:
         self.picture = SIGNAL_PICTURE_RED
-        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
+        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
     elif self.direction == 3:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
@@ -111,10 +111,10 @@ class Signal(pygame.sprite.Sprite):
     elif self.direction == 4:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
-        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 90)
+        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 270)
       else:
         self.picture = SIGNAL_PICTURE_RED
-        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
+        self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
 
 
 class Car(pygame.sprite.Sprite):
