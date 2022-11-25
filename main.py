@@ -5,8 +5,11 @@ pygame.init()
 
 #Simulationsparameter
 frequency = 100
-speed = 1
+max_speed = 1
 distance = 15
+
+time = 0
+number_of_cars_left = 0
 
 
 #Farben
@@ -58,11 +61,18 @@ TEXT_MESSAGES = []
 
 
 #Textanzeigen
-font = pygame.font.Font(pygame.font.get_default_font(), 25)
-text_number_of_cars = font.render('Anzahl Fahrzeuge: 0', True, WHITE)
-TEXT_MESSAGES.append(text_number_of_cars)
-text_max_speed_cars = text_number_of_cars = font.render('Maximalgeschwindigkeit:' + str(speed), True, WHITE)
+FONTSIZE = 20
+font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
+text_number_of_cars_in_screen = font.render('---', True, WHITE)
+TEXT_MESSAGES.append(text_number_of_cars_in_screen)
+text_max_speed_cars = text_number_of_cars_in_screen = font.render('---', True, WHITE)
 TEXT_MESSAGES.append(text_max_speed_cars)
+text_frequncy = font.render('---', True, WHITE)
+TEXT_MESSAGES.append(text_frequncy)
+text_time = text_number_of_cars_in_screen = font.render('---', True, WHITE)
+TEXT_MESSAGES.append(text_time)
+text_number_of_cars_left_screen = font.render('---', True, WHITE)
+TEXT_MESSAGES.append(text_number_of_cars_left_screen)
 
 
 
@@ -76,8 +86,9 @@ class Signal(pygame.sprite.Sprite):
     signal_distance = 100
 
 
-    self.stop_area = StopArea((20, 20), (30, 30))
-    STOP_AREA_DIMENSION = (30, 30)
+
+    STOP_AREA_DIMENSION_DIRECTION_1_3 = (30, 5)
+    STOP_AREA_DIMENSION_DIRECTION_2_4 = (5, 30)
 
     if position == 1:
       self.position = [width*0.318, height*0.465]
@@ -89,19 +100,19 @@ class Signal(pygame.sprite.Sprite):
     if direction == 1:
       self.position = [self.position[0] - signal_distance*0.65, self.position[1] - signal_distance*0.8]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
-      self.stop_area = StopArea((self.position[0] + 50, self.position[1] + 20), STOP_AREA_DIMENSION)
+      self.stop_area = StopArea((self.position[0] + 50, self.position[1] + 20), STOP_AREA_DIMENSION_DIRECTION_1_3)
     elif direction == 2:
       self.position = [self.position[0] + signal_distance*0.85, self.position[1] - signal_distance*0.5]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
-      self.stop_area = StopArea((self.position[0], self.position[1] + 40), STOP_AREA_DIMENSION)
+      self.stop_area = StopArea((self.position[0], self.position[1] + 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
     elif direction == 3:
       self.position = [self.position[0] + signal_distance*0.85, self.position[1] + signal_distance*1]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
-      self.stop_area = StopArea((self.position[0] - 50, self.position[1]), STOP_AREA_DIMENSION)
+      self.stop_area = StopArea((self.position[0] - 50, self.position[1]), STOP_AREA_DIMENSION_DIRECTION_1_3)
     elif direction == 4:
       self.position = [self.position[0] - signal_distance*0.95, self.position[1] + signal_distance*1]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
-      self.stop_area = StopArea((self.position[0] + 30, self.position[1] - 40), STOP_AREA_DIMENSION)
+      self.stop_area = StopArea((self.position[0] + 30, self.position[1] - 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
 
     self.rect = self.picture.get_rect()
     self.rect.x = self.position[0]
@@ -153,7 +164,8 @@ class StopArea(pygame.sprite.Sprite):
     pygame.sprite.Sprite.__init__(self)
     self.rect = pygame.Rect(position, dimensions)
     STOP_AREAS.add(self)
-    #pygame.draw.rect(screen, (255, 0, 0), self.rect) #draw for debugging
+    pygame.draw.rect(screen, (255, 0, 0), self.rect) #draw for debugging
+
 
 
 class Car(pygame.sprite.Sprite):
@@ -199,10 +211,11 @@ class Car(pygame.sprite.Sprite):
     self.rect.x = start[0]
     self.rect.y = start[1]
     CARS.add(self)
+    self.speed = max_speed
 
 
 
-  def move(self, amount):
+  def move(self):
     road_free = True
     signal_green = True
 
@@ -212,6 +225,7 @@ class Car(pygame.sprite.Sprite):
     touches_stop_area = pygame.sprite.spritecollide(self, STOP_AREAS, False)
     if len(touches_stop_area) > 0:
       signal_green = False
+
 
     if len(collision_with) > 0:
       road_free = False
@@ -227,19 +241,28 @@ class Car(pygame.sprite.Sprite):
       if not collision_with[0].rect.collidepoint(point_to_check):
         road_free = True
 
+    if self.speed < max_speed:
+      self.speed += 0.2
+    else:
+      self.speed = max_speed
+
     if road_free and signal_green:
       if self.direction == 1:
-        self.rect.y += amount
+        self.rect.y += self.speed
       elif self.direction == 2:
-        self.rect.x -= amount
+        self.rect.x -= self.speed
       elif self.direction == 3:
-        self.rect.y -= amount
+        self.rect.y -= self.speed
       else:
-        self.rect.x += amount
-      self.distance += amount
+        self.rect.x += self.speed
+      self.distance += self.speed
+    else:
+      self.speed = 0
 
     if check_if_left_screen(self):
       CARS.remove(self)
+      global number_of_cars_left
+      number_of_cars_left += 1
 
 def check_if_left_screen(car):
     started = car.distance > 100
@@ -259,7 +282,7 @@ def draw_screen():
   counter = 10
   for t in TEXT_MESSAGES:
     screen.blit(t, pygame.Rect(10, counter, 200, 30))
-    counter += 40
+    counter += FONTSIZE + 10
   pygame.display.update()
 
 
@@ -272,9 +295,10 @@ def draw_screen():
 
 
 def main():
-  global speed, frequency
+  global max_speed, frequency, time
   running = True
   clock = pygame.time.Clock()
+
 
 
   for j in range(1,5,1):
@@ -295,15 +319,18 @@ def main():
   while running:
 
     clock.tick(FPS)
-    global SPRITES, text_number_of_cars, text_max_speed_cars
-    TEXT_MESSAGES[0] = font.render('Anzahl Fahrzeuge: ' + str(len(CARS)), True, WHITE)
-    TEXT_MESSAGES[1] = font.render('Maximalgeschwindigkeit Fahrzeuge: ' + str(speed), True, WHITE)
+    global SPRITES, text_number_of_cars_in_screen, text_max_speed_cars
+    TEXT_MESSAGES[0] = font.render('Anzahl Fahrzeuge im Bild: ' + str(len(CARS)), True, WHITE)
+    TEXT_MESSAGES[1] = font.render('Maximalgeschwindigkeit Fahrzeuge: ' + str(max_speed), True, WHITE)
+    TEXT_MESSAGES[2] = font.render('Dauer zwischen Autos: ' + str((int(frequency/0.06))) + " ms", True, WHITE)
+    TEXT_MESSAGES[3] = font.render('Simulationsdauer: ' + str(int(time/60)) + ":" + str(time%60), True, WHITE)
+    TEXT_MESSAGES[4] = font.render('Anzahl Fahrzeuge ausser Bild: ' + str(number_of_cars_left), True, WHITE)
 
     if counter == 0:
       for i in range(1,9,1):
         Car(i)
 
-    if counter == 20:
+    if counter == 0:
       pos_1 = random.randrange(0,4)
       SIGNALS_POS_1[pos_1].change_color("green")
       pos_2 = random.randrange(0,4)
@@ -312,35 +339,39 @@ def main():
       SIGNALS_POS_3[pos_3].change_color("green")
 
 
-    if counter == 50:
+    if counter == frequency-1:
       SIGNALS_POS_1[pos_1].change_color("red")
       SIGNALS_POS_2[pos_2].change_color("red")
       SIGNALS_POS_3[pos_3].change_color("red")
 
+    if counter%FPS == 0 and counter != 0:
+      time += 1
+
     counter += 1
 
+
     for c in CARS:
-      c.move(speed)
+      c.move()
 
     for event in pygame.event.get():
 
       keys_pressed = pygame.key.get_pressed()
 
       if keys_pressed[pygame.K_DOWN] and frequency <= 200:
-        frequency += 10
+        frequency += 3
         print("frequency", frequency)
 
       if keys_pressed[pygame.K_UP] and frequency >= 60:
-        frequency -= 10
+        frequency -= 3
         print("frequency", frequency)
 
-      if keys_pressed[pygame.K_RIGHT] and speed <= 3:
-        speed += 1
-        print("speed", speed)
+      if keys_pressed[pygame.K_RIGHT] and max_speed <= 3:
+        max_speed += 1
+        print("speed", max_speed)
 
-      if keys_pressed[pygame.K_LEFT] and speed >= 2:
-        speed -= 1
-        print("speed", speed)
+      if keys_pressed[pygame.K_LEFT] and max_speed >= 2:
+        max_speed -= 1
+        print("speed", max_speed)
 
       if event.type == pygame.QUIT:
         running = False
