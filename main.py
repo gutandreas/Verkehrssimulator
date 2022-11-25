@@ -1,20 +1,28 @@
-import math
 import os.path
 import random
-
 import pygame
-import kivy
-from kivy.uix.slider import Slider
-from pygame import color, rect
+pygame.init()
 
+#Simulationsparameter
+frequency = 100
+speed = 1
+distance = 15
+
+
+#Farben
 WHITE = (255, 255, 255)
+GREEN = (100, 255, 100)
+BLUE = (100, 100, 255)
 FPS = 30
 
+#Fenster
 (width, height) = (1536, 864)
 screen = pygame.display.set_mode((width, height))
 pygame.display.flip()
 pygame.display.set_caption("Verkehrssimulator")
 
+
+#Bilder
 CAR_DIMENSIONS = (20, 35)
 SIGNAL_DIMENSIONS = (30, 60)
 
@@ -39,18 +47,24 @@ SIGNAL_PICTURE_RED = pygame.transform.scale(SIGNAL_PICTURE_RED, SIGNAL_DIMENSION
 SIGNAL_PICTURE_GREEN = pygame.image.load(os.path.join("bilder", "ampel_gruen.png"))
 SIGNAL_PICTURE_GREEN = pygame.transform.scale(SIGNAL_PICTURE_GREEN, SIGNAL_DIMENSIONS)
 
+#Groups und Listen
 CARS = pygame.sprite.Group()
 SIGNALS = pygame.sprite.Group()
 SIGNALS_POS_1 = []
 SIGNALS_POS_2 = []
 SIGNALS_POS_3 = []
 STOP_AREAS = pygame.sprite.Group()
+TEXT_MESSAGES = []
 
-#start4 = [width / 2.05, -50]
 
-frequency = 100
-speed = 1
-distance = 15
+#Textanzeigen
+font = pygame.font.Font(pygame.font.get_default_font(), 25)
+text_number_of_cars = font.render('Anzahl Fahrzeuge: 0', True, WHITE)
+TEXT_MESSAGES.append(text_number_of_cars)
+text_max_speed_cars = text_number_of_cars = font.render('Maximalgeschwindigkeit:' + str(speed), True, WHITE)
+TEXT_MESSAGES.append(text_max_speed_cars)
+
+
 
 class Signal(pygame.sprite.Sprite):
   def __init__(self, position, direction):
@@ -242,6 +256,10 @@ def draw_screen():
     screen.blit(c.picture, (c.rect.x, c.rect.y))
   for s in SIGNALS:
     screen.blit(s.picture, (s.rect.x, s.rect.y))
+  counter = 10
+  for t in TEXT_MESSAGES:
+    screen.blit(t, pygame.Rect(10, counter, 200, 30))
+    counter += 40
   pygame.display.update()
 
 
@@ -277,10 +295,11 @@ def main():
   while running:
 
     clock.tick(FPS)
+    global SPRITES, text_number_of_cars, text_max_speed_cars
+    TEXT_MESSAGES[0] = font.render('Anzahl Fahrzeuge: ' + str(len(CARS)), True, WHITE)
+    TEXT_MESSAGES[1] = font.render('Maximalgeschwindigkeit Fahrzeuge: ' + str(speed), True, WHITE)
 
     if counter == 0:
-      global SPRITES
-      print(len(CARS))
       for i in range(1,9,1):
         Car(i)
 
@@ -307,16 +326,20 @@ def main():
 
       keys_pressed = pygame.key.get_pressed()
 
-      if keys_pressed[pygame.K_UP]:
+      if keys_pressed[pygame.K_DOWN] and frequency <= 200:
         frequency += 10
         print("frequency", frequency)
 
-      if keys_pressed[pygame.K_DOWN]:
+      if keys_pressed[pygame.K_UP] and frequency >= 60:
         frequency -= 10
         print("frequency", frequency)
 
-      if keys_pressed[pygame.K_RIGHT]:
+      if keys_pressed[pygame.K_RIGHT] and speed <= 3:
         speed += 1
+        print("speed", speed)
+
+      if keys_pressed[pygame.K_LEFT] and speed >= 2:
+        speed -= 1
         print("speed", speed)
 
       if event.type == pygame.QUIT:
