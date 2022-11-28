@@ -1,6 +1,9 @@
 import os.path
 import random
 import pygame
+
+import signal_settings
+
 pygame.init()
 
 #Simulationsparameter
@@ -10,7 +13,6 @@ distance = 15
 
 time = 0
 number_of_cars_left = 0
-
 
 #Farben
 WHITE = (255, 255, 255)
@@ -58,6 +60,7 @@ SIGNALS_POS_2 = []
 SIGNALS_POS_3 = []
 STOP_AREAS = pygame.sprite.Group()
 TEXT_MESSAGES = []
+TIMETABLE = []
 
 
 #Textanzeigen
@@ -82,10 +85,7 @@ class Signal(pygame.sprite.Sprite):
     self.direction = direction
 
     SIGNALS.add(self)
-
     signal_distance = 100
-
-
 
     STOP_AREA_DIMENSION_DIRECTION_1_3 = (30, 5)
     STOP_AREA_DIMENSION_DIRECTION_2_4 = (5, 30)
@@ -213,8 +213,6 @@ class Car(pygame.sprite.Sprite):
     CARS.add(self)
     self.speed = max_speed
 
-
-
   def move(self):
     road_free = True
     signal_green = True
@@ -264,6 +262,13 @@ class Car(pygame.sprite.Sprite):
       global number_of_cars_left
       number_of_cars_left += 1
 
+class Event_Green():
+  def __init__(self, signal_group, direction, time):
+    self.signal_group = signal_group
+    self.direction = direction
+    self.time = time
+
+
 def check_if_left_screen(car):
     started = car.distance > 100
     top = car.rect.y < 0
@@ -288,6 +293,36 @@ def draw_screen():
 
 
 
+def change_signal_to_green(signal_group, direction):
+
+  signal = None
+
+  if signal_group == 1:
+    for i in range(1,5,1):
+      if direction == i:
+        for s in SIGNALS_POS_1:
+          s.change_color("red")
+        signal = SIGNALS_POS_1[i-1]
+  elif signal_group == 2:
+    for i in range(1,5,1):
+      if direction == i:
+        for s in SIGNALS_POS_2:
+          s.change_color("red")
+        signal = SIGNALS_POS_2[i-1]
+  else:
+    for i in range(1,5,1):
+      if direction == i:
+        for s in SIGNALS_POS_3:
+          s.change_color("red")
+        signal = SIGNALS_POS_3[i-1]
+
+  signal.change_color("green")
+
+
+
+
+
+
 
 
 
@@ -298,8 +333,10 @@ def main():
   global max_speed, frequency, time
   running = True
   clock = pygame.time.Clock()
+  events = settings.Settings.events
 
-
+  for e in events:
+    TIMETABLE.append(e)
 
   for j in range(1,5,1):
     s = Signal(1, j)
@@ -326,23 +363,15 @@ def main():
     TEXT_MESSAGES[3] = font.render('Simulationsdauer: ' + str(int(time/60)) + ":" + str(time%60), True, WHITE)
     TEXT_MESSAGES[4] = font.render('Anzahl Fahrzeuge ausser Bild: ' + str(number_of_cars_left), True, WHITE)
 
-    if counter == 0:
+    if counter % frequency == 0:
       for i in range(1,9,1):
         Car(i)
 
-    if counter == 0:
-      pos_1 = random.randrange(0,4)
-      SIGNALS_POS_1[pos_1].change_color("green")
-      pos_2 = random.randrange(0,4)
-      SIGNALS_POS_2[pos_2].change_color("green")
-      pos_3 = random.randrange(0, 4)
-      SIGNALS_POS_3[pos_3].change_color("green")
 
+    for e in TIMETABLE:
+      if counter == e.time:
+        change_signal_to_green(e.signal_group, e.direction)
 
-    if counter == frequency-1:
-      SIGNALS_POS_1[pos_1].change_color("red")
-      SIGNALS_POS_2[pos_2].change_color("red")
-      SIGNALS_POS_3[pos_3].change_color("red")
 
     if counter%FPS == 0 and counter != 0:
       time += 1
@@ -379,7 +408,7 @@ def main():
 
     draw_screen()
 
-    if counter >= frequency:
+    if counter >= 500:
       counter = 0
 
 if __name__ == "__main__":
