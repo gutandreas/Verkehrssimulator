@@ -333,7 +333,7 @@ def main():
   global max_speed, frequency, time
   running = True
   clock = pygame.time.Clock()
-  events = settings.Settings.events
+  events = signal_settings.Settings.events
 
   for e in events:
     TIMETABLE.append(e)
