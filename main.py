@@ -13,6 +13,7 @@ distance = 15
 
 time = 0
 number_of_cars_left = 0
+running = True
 
 #Farben
 WHITE = (255, 255, 255)
@@ -76,6 +77,8 @@ text_time = text_number_of_cars_in_screen = font.render('---', True, WHITE)
 TEXT_MESSAGES.append(text_time)
 text_number_of_cars_left_screen = font.render('---', True, WHITE)
 TEXT_MESSAGES.append(text_number_of_cars_left_screen)
+text_timetable = font.render('---', True, WHITE)
+TEXT_MESSAGES.append(text_timetable)
 
 
 
@@ -318,6 +321,33 @@ def change_signal_to_green(signal_group, direction):
 
   signal.change_color("green")
 
+def check_key_events():
+
+  global frequency, max_speed, running
+
+  for event in pygame.event.get():
+
+    keys_pressed = pygame.key.get_pressed()
+
+    if keys_pressed[pygame.K_DOWN] and frequency <= 200:
+      frequency += 3
+      print("frequency", frequency)
+
+    if keys_pressed[pygame.K_UP] and frequency >= 60:
+      frequency -= 3
+      print("frequency", frequency)
+
+    if keys_pressed[pygame.K_RIGHT] and max_speed <= 3:
+      max_speed += 1
+      print("speed", max_speed)
+
+    if keys_pressed[pygame.K_LEFT] and max_speed >= 2:
+      max_speed -= 1
+      print("speed", max_speed)
+
+    if event.type == pygame.QUIT:
+      running = False
+
 
 
 
@@ -330,8 +360,7 @@ def change_signal_to_green(signal_group, direction):
 
 
 def main():
-  global max_speed, frequency, time
-  running = True
+  global time
   clock = pygame.time.Clock()
   events = signal_settings.Settings.events
 
@@ -351,6 +380,7 @@ def main():
     SIGNALS_POS_3.append(s)
 
   counter = 0
+  duration = signal_settings.Settings.duration
 
 
   while running:
@@ -362,6 +392,7 @@ def main():
     TEXT_MESSAGES[2] = font.render('Dauer zwischen Autos: ' + str((int(frequency/0.06))) + " ms", True, WHITE)
     TEXT_MESSAGES[3] = font.render('Simulationsdauer: ' + str(int(time/60)) + ":" + str(time%60), True, WHITE)
     TEXT_MESSAGES[4] = font.render('Anzahl Fahrzeuge ausser Bild: ' + str(number_of_cars_left), True, WHITE)
+    TEXT_MESSAGES[5] = font.render('Zeitpunkt in Timeline: ' + str(counter), True, WHITE)
 
     if counter % frequency == 0:
       for i in range(1,9,1):
@@ -382,33 +413,12 @@ def main():
     for c in CARS:
       c.move()
 
-    for event in pygame.event.get():
-
-      keys_pressed = pygame.key.get_pressed()
-
-      if keys_pressed[pygame.K_DOWN] and frequency <= 200:
-        frequency += 3
-        print("frequency", frequency)
-
-      if keys_pressed[pygame.K_UP] and frequency >= 60:
-        frequency -= 3
-        print("frequency", frequency)
-
-      if keys_pressed[pygame.K_RIGHT] and max_speed <= 3:
-        max_speed += 1
-        print("speed", max_speed)
-
-      if keys_pressed[pygame.K_LEFT] and max_speed >= 2:
-        max_speed -= 1
-        print("speed", max_speed)
-
-      if event.type == pygame.QUIT:
-        running = False
 
 
+    check_key_events()
     draw_screen()
 
-    if counter >= 500:
+    if counter >= duration:
       counter = 0
 
 if __name__ == "__main__":

@@ -9,3 +9,5 @@ class Settings:
             Event_Green(3, 3, 200),
             Event_Green(2, 4, 200)
         ]
+
+        duration = 300
