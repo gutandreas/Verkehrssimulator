@@ -14,6 +14,7 @@ distance = 15
 time = 0
 number_of_cars_left = 0
 running = True
+debug = True
 
 # Farben
 WHITE = (255, 255, 255)
@@ -108,7 +109,7 @@ class Signal(pygame.sprite.Sprite):
             self.position_coordinates = [self.position_coordinates[0] - signal_distance * 0.65, self.position_coordinates[1] - signal_distance * 0.8]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
             self.stop_area = StopArea((self.position_coordinates[0] + 50, self.position_coordinates[1] + 20), STOP_AREA_DIMENSION_DIRECTION_1_3)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 90), TURN_AREA_DIMENSION, self)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 93), TURN_AREA_DIMENSION, self)
             self.turn_area2 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 150), TURN_AREA_DIMENSION, self)
         elif direction == 2:
             self.position_coordinates = [self.position_coordinates[0] + signal_distance * 0.85, self.position_coordinates[1] - signal_distance * 0.5]
@@ -266,7 +267,7 @@ class Car(pygame.sprite.Sprite):
             signal_green = False
 
         if len(collision_with) > 0:
-            road_free = False
+            road_free = True
             if self.direction == 1:
                 point_to_check = self.rect.midbottom
             elif self.direction == 2:
@@ -276,8 +277,10 @@ class Car(pygame.sprite.Sprite):
             else:
                 point_to_check = self.rect.midright
 
-            if not collision_with[0].rect.collidepoint(point_to_check):
-                road_free = True
+            for c in collision_with:
+              if c.rect.collidepoint(point_to_check):
+                road_free = False
+                break
 
         if self.speed < max_speed:
             self.speed += 0.2
@@ -347,6 +350,7 @@ class Car(pygame.sprite.Sprite):
 
                     self.direction = self.direction % 4 + 1
                     self.picture = pygame.transform.rotate(self.picture, 270)
+                    self.rect = pygame.Rect(self.rect.left, self.rect.top, self.rect.height, self.rect.width)
                     self.next_direction_random_number = random.randrange(3)
 
                 if a == a.signal.turn_area2 and self.next_direction_random_number == 1:
@@ -360,6 +364,7 @@ class Car(pygame.sprite.Sprite):
                             self.rect.y = STARTPOINTS[3][1]
                         if self.direction == 4:
                             self.rect.x = STARTPOINTS[6][0]
+
 
                     # Ampel 2
                     if a.signal.position == 2:
@@ -385,7 +390,9 @@ class Car(pygame.sprite.Sprite):
 
                     self.direction = (self.direction - 1) % 4
                     self.picture = pygame.transform.rotate(self.picture, 90)
+                    self.rect = self.picture.get_rect(topleft = self.rect.topleft)
                     self.next_direction_random_number = random.randrange(3)
+
 
 
 class Event_Green():
@@ -409,16 +416,20 @@ def draw_screen():
     screen.blit(BACKGROUND, (0, 0))
     for c in CARS:
         screen.blit(c.picture, (c.rect.x, c.rect.y))
+        if debug:
+          pygame.draw.rect(screen, (255, 0, 0), c.rect)
     for s in SIGNALS:
         screen.blit(s.picture, (s.rect.x, s.rect.y))
     counter = 10
     for t in TEXT_MESSAGES:
         screen.blit(t, pygame.Rect(10, counter, 200, 30))
         counter += FONTSIZE + 10
-    for t in TURN_AREAS:
-        pygame.draw.rect(screen, (255, 0, 0), t)
-    for s in STOP_AREAS:
-        pygame.draw.rect(screen, (255, 255, 255), s)
+
+    if debug:
+      for t in TURN_AREAS:
+          pygame.draw.rect(screen, (255, 0, 0), t)
+      for s in STOP_AREAS:
+           pygame.draw.rect(screen, (255, 255, 255), s)
     pygame.display.update()
 
 
@@ -448,7 +459,7 @@ def change_signal_to_green(signal_group, direction):
 
 
 def check_key_events():
-    global frequency, max_speed, running
+    global frequency, max_speed, running, debug
 
     for event in pygame.event.get():
 
@@ -469,6 +480,12 @@ def check_key_events():
         if keys_pressed[pygame.K_LEFT] and max_speed >= 2:
             max_speed -= 1
             print("speed", max_speed)
+
+        if keys_pressed[pygame.K_d]:
+            debug = True
+
+        if keys_pressed[pygame.K_f]:
+            debug = False
 
         if event.type == pygame.QUIT:
             running = False
