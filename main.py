@@ -60,6 +60,8 @@ SIGNALS_POS_1 = []
 SIGNALS_POS_2 = []
 SIGNALS_POS_3 = []
 STOP_AREAS = pygame.sprite.Group()
+TURN_AREAS = pygame.sprite.Group()
+TURN_AREAS_LIST = []
 TEXT_MESSAGES = []
 TIMETABLE = []
 
@@ -93,6 +95,8 @@ class Signal(pygame.sprite.Sprite):
     STOP_AREA_DIMENSION_DIRECTION_1_3 = (30, 5)
     STOP_AREA_DIMENSION_DIRECTION_2_4 = (5, 30)
 
+    TURN_AREA_DIMENSION = (5, 5)
+
     if position == 1:
       self.position = [width*0.318, height*0.465]
     elif position == 2:
@@ -104,18 +108,27 @@ class Signal(pygame.sprite.Sprite):
       self.position = [self.position[0] - signal_distance*0.65, self.position[1] - signal_distance*0.8]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
       self.stop_area = StopArea((self.position[0] + 50, self.position[1] + 20), STOP_AREA_DIMENSION_DIRECTION_1_3)
+      self.turn_area1 = TurnArea((self.position[0] + 50, self.position[1] + 110), TURN_AREA_DIMENSION, 1)
+      self.turn_area2 = TurnArea((self.position[0] + 50, self.position[1] + 170), TURN_AREA_DIMENSION, 1)
     elif direction == 2:
       self.position = [self.position[0] + signal_distance*0.85, self.position[1] - signal_distance*0.5]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
       self.stop_area = StopArea((self.position[0], self.position[1] + 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
+      self.turn_area1 = TurnArea((self.position[0] - 40, self.position[1] + 50), TURN_AREA_DIMENSION, 2)
+      self.turn_area2 = TurnArea((self.position[0] - 95, self.position[1] + 50), TURN_AREA_DIMENSION, 2)
+
     elif direction == 3:
       self.position = [self.position[0] + signal_distance*0.85, self.position[1] + signal_distance*1]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
       self.stop_area = StopArea((self.position[0] - 50, self.position[1]), STOP_AREA_DIMENSION_DIRECTION_1_3)
+      self.turn_area1 = TurnArea((self.position[0] + 50, self.position[1] + 80), TURN_AREA_DIMENSION, 3)
+      self.turn_area2 = TurnArea((self.position[0] + 50, self.position[1] + 140), TURN_AREA_DIMENSION, 3)
     elif direction == 4:
       self.position = [self.position[0] - signal_distance*0.95, self.position[1] + signal_distance*1]
       self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
       self.stop_area = StopArea((self.position[0] + 30, self.position[1] - 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
+      self.turn_area1 = TurnArea((self.position[0] + 50, self.position[1] + 80), TURN_AREA_DIMENSION, 4)
+      self.turn_area2 = TurnArea((self.position[0] + 50, self.position[1] + 140), TURN_AREA_DIMENSION, 4)
 
     self.rect = self.picture.get_rect()
     self.rect.x = self.position[0]
@@ -129,37 +142,53 @@ class Signal(pygame.sprite.Sprite):
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 180)
         STOP_AREAS.remove(self.stop_area)
+        TURN_AREAS.add(self.turn_area1)
+        TURN_AREAS.add(self.turn_area2)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
         STOP_AREAS.add(self.stop_area)
+        TURN_AREAS.remove(self.turn_area1)
+        TURN_AREAS.remove(self.turn_area2)
     elif self.direction == 2:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 90)
         STOP_AREAS.remove(self.stop_area)
+        TURN_AREAS.add(self.turn_area1)
+        TURN_AREAS.add(self.turn_area2)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
         STOP_AREAS.add(self.stop_area)
+        TURN_AREAS.remove(self.turn_area1)
+        TURN_AREAS.remove(self.turn_area2)
     elif self.direction == 3:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 0)
         STOP_AREAS.remove(self.stop_area)
+        TURN_AREAS.add(self.turn_area1)
+        TURN_AREAS.add(self.turn_area2)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
         STOP_AREAS.add(self.stop_area)
+        TURN_AREAS.remove(self.turn_area1)
+        TURN_AREAS.remove(self.turn_area2)
     elif self.direction == 4:
       if color == "green":
         self.picture = SIGNAL_PICTURE_GREEN
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_GREEN, 270)
         STOP_AREAS.remove(self.stop_area)
+        TURN_AREAS.add(self.turn_area1)
+        TURN_AREAS.add(self.turn_area2)
       else:
         self.picture = SIGNAL_PICTURE_RED
         self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
         STOP_AREAS.add(self.stop_area)
+        TURN_AREAS.remove(self.turn_area1)
+        TURN_AREAS.remove(self.turn_area2)
 
 class StopArea(pygame.sprite.Sprite):
 
@@ -167,38 +196,48 @@ class StopArea(pygame.sprite.Sprite):
     pygame.sprite.Sprite.__init__(self)
     self.rect = pygame.Rect(position, dimensions)
     STOP_AREAS.add(self)
-    pygame.draw.rect(screen, (255, 0, 0), self.rect) #draw for debugging
 
+class TurnArea(pygame.sprite.Sprite):
 
+  def __init__(self, position, dimensions, signal_position):
+    pygame.sprite.Sprite.__init__(self)
+    self.rect = pygame.Rect(position, dimensions)
+    self.signal_position = signal_position
+    TURN_AREAS.add(self)
+    TURN_AREAS_LIST.append(self)
 
 class Car(pygame.sprite.Sprite):
 
   def __init__(self, start):
     pygame.sprite.Sprite.__init__(self)
     self.distance = 0
+    self.start = start
+    self.startpoints = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [width, height * 0.47],
+                   [width * 0.68, height + 50], [width * 0.515, height + 50], [width * 0.345, height + 50]
+                   , [-50, height * 0.53]]
     if start == 1:
-      start = [width * 0.31, -50]
+      self.start = self.startpoints[0]
       self.direction = 1
     elif start == 2:
-      start = [width * 0.475, -50]
+      self.start = self.startpoints[1]
       self.direction = 1
     elif start == 3:
-      start = [width * 0.64, -50]
+      self.start = self.startpoints[2]
       self.direction = 1
     elif start == 4:
-      start = [width, height * 0.47]
+      self.start = self.startpoints[3]
       self.direction = 2
     elif start == 5:
-      start = [width * 0.68, height + 50]
+      self.start = self.startpoints[4]
       self.direction = 3
     elif start == 6:
-      start = [width * 0.515, height + 50]
+      self.start = self.startpoints[5]
       self.direction = 3
     elif start == 7:
-      start = [width * 0.345, height + 50]
+      self.start = self.startpoints[6]
       self.direction = 3
     else:
-      start = [-50, height * 0.53]
+      self.start = self.startpoints[7]
       self.direction = 4
 
     if self.direction == 1:
@@ -211,10 +250,11 @@ class Car(pygame.sprite.Sprite):
       self.picture = pygame.transform.rotate(CAR_PICTURES[random.randrange(len(CAR_PICTURES))].copy(), 270)
 
     self.rect = self.picture.get_rect()
-    self.rect.x = start[0]
-    self.rect.y = start[1]
+    self.rect.x = self.start[0]
+    self.rect.y = self.start[1]
     CARS.add(self)
     self.speed = max_speed
+    self.block_countdown = 0
 
   def move(self):
     road_free = True
@@ -257,13 +297,34 @@ class Car(pygame.sprite.Sprite):
       else:
         self.rect.x += self.speed
       self.distance += self.speed
+
+      self.block_countdown -= self.speed
+      if self.block_countdown < 0:
+        self.block_countdown = 0
+
     else:
       self.speed = 0
+
+    self.turn()
 
     if check_if_left_screen(self):
       CARS.remove(self)
       global number_of_cars_left
       number_of_cars_left += 1
+
+  def turn(self):
+    touches_turn_area = pygame.sprite.spritecollide(self, TURN_AREAS, False)
+    own_signal_turn_area_involved = False
+    for a in touches_turn_area:
+      if a.signal_position == self.direction:
+        own_signal_turn_area_involved = True
+        break
+
+    if own_signal_turn_area_involved and self.block_countdown == 0 and self.direction == 1:
+      self.rect.y = self.startpoints[3][1]
+      self.direction = 2
+      self.picture = pygame.transform.rotate(self.picture, 270)
+      self.block_countdown = 100
 
 class Event_Green():
   def __init__(self, signal_group, direction, time):
@@ -291,6 +352,8 @@ def draw_screen():
   for t in TEXT_MESSAGES:
     screen.blit(t, pygame.Rect(10, counter, 200, 30))
     counter += FONTSIZE + 10
+  # for t in TURN_AREAS:
+  #   pygame.draw.rect(screen, (255, 0, 0), t)
   pygame.display.update()
 
 
