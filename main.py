@@ -44,8 +44,14 @@ CAR_PICTURE_CYAN = pygame.image.load(os.path.join("bilder", "auto_tuerkis.png"))
 CAR_PICTURE_CYAN = pygame.transform.scale(CAR_PICTURE_CYAN, CAR_DIMENSIONS)
 CAR_PICTURE_GREEN = pygame.image.load(os.path.join("bilder", "auto_gruen.png"))
 CAR_PICTURE_GREEN = pygame.transform.scale(CAR_PICTURE_GREEN, CAR_DIMENSIONS)
+CAR_PICTURE_PURPLE = pygame.image.load(os.path.join("bilder", "auto_violett.png"))
+CAR_PICTURE_PURPLE = pygame.transform.scale(CAR_PICTURE_PURPLE, CAR_DIMENSIONS)
+CAR_PICTURE_ORANGE = pygame.image.load(os.path.join("bilder", "auto_orange.png"))
+CAR_PICTURE_ORANGE = pygame.transform.scale(CAR_PICTURE_ORANGE, CAR_DIMENSIONS)
+CAR_PICTURE_LEMON = pygame.image.load(os.path.join("bilder", "auto_limone.png"))
+CAR_PICTURE_LEMON = pygame.transform.scale(CAR_PICTURE_LEMON, CAR_DIMENSIONS)
 
-CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE, CAR_PICTURE_GREEN, CAR_PICTURE_CYAN]
+CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE, CAR_PICTURE_GREEN, CAR_PICTURE_CYAN, CAR_PICTURE_PURPLE, CAR_PICTURE_ORANGE, CAR_PICTURE_LEMON]
 
 SIGNAL_PICTURE_RED = pygame.image.load(os.path.join("bilder", "ampel_rot.png"))
 SIGNAL_PICTURE_RED = pygame.transform.scale(SIGNAL_PICTURE_RED, SIGNAL_DIMENSIONS)
@@ -128,7 +134,7 @@ class Signal(pygame.sprite.Sprite):
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
             self.stop_area = StopArea((self.position_coordinates[0] + 30, self.position_coordinates[1] - 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
             self.turn_area1 = TurnArea((self.position_coordinates[0] + 90, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] + 140, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] + 145, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
 
         self.rect = self.picture.get_rect()
         self.rect.x = self.position_coordinates[0]
