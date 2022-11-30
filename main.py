@@ -120,14 +120,14 @@ class Signal(pygame.sprite.Sprite):
             self.position_coordinates = [self.position_coordinates[0] + signal_distance * 0.85, self.position_coordinates[1] + signal_distance * 1]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
             self.stop_area = StopArea((self.position_coordinates[0] - 50, self.position_coordinates[1] + 20), STOP_AREA_DIMENSION_DIRECTION_1_3)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] - 40, self.position_coordinates[1] - 40), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] - 40, self.position_coordinates[1] - 80), TURN_AREA_DIMENSION, self)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] - 35, self.position_coordinates[1] - 40), TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] - 35, self.position_coordinates[1] - 80), TURN_AREA_DIMENSION, self)
         elif direction == 4:
             self.position_coordinates = [self.position_coordinates[0] - signal_distance * 0.95, self.position_coordinates[1] + signal_distance * 1]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
             self.stop_area = StopArea((self.position_coordinates[0] + 30, self.position_coordinates[1] - 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] + 90, self.position_coordinates[1] - 30), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] + 140, self.position_coordinates[1] - 30), TURN_AREA_DIMENSION, self)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] + 90, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] + 140, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
 
         self.rect = self.picture.get_rect()
         self.rect.x = self.position_coordinates[0]
