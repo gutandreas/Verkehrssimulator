@@ -14,7 +14,7 @@ distance = 15
 time = 0
 number_of_cars_left = 0
 running = True
-debug = True
+debug = False
 
 # Farben
 WHITE = (255, 255, 255)
@@ -32,7 +32,7 @@ pygame.display.set_caption("Verkehrssimulator")
 CAR_DIMENSIONS = (20, 35)
 SIGNAL_DIMENSIONS = (30, 60)
 
-BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
+BACKGROUND = pygame.image.load(os.path.join("bilder", "background2.png"))
 BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
 CAR_PICTURE_RED = pygame.image.load(os.path.join("bilder", "auto_rot.png"))
 CAR_PICTURE_RED = pygame.transform.scale(CAR_PICTURE_RED, CAR_DIMENSIONS)
@@ -465,7 +465,7 @@ def change_signal_to_green(signal_group, direction):
 
 
 def check_key_events():
-    global frequency, max_speed, running, debug
+    global frequency, max_speed, running, debug, BACKGROUND
 
     for event in pygame.event.get():
 
@@ -493,8 +493,18 @@ def check_key_events():
         if keys_pressed[pygame.K_f]:
             debug = False
 
+        if keys_pressed[pygame.K_1]:
+            BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
+            BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
+
+        if keys_pressed[pygame.K_2]:
+            BACKGROUND = pygame.image.load(os.path.join("bilder", "background2.png"))
+            BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
+
         if event.type == pygame.QUIT:
             running = False
+
+
 
 
 def main():
