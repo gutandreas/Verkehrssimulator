@@ -8,6 +8,7 @@ pygame.init()
 
 # Simulationsparameter
 frequency = 100
+frequency_as_level = 35
 max_speed = 1
 distance = 15
 
@@ -76,18 +77,11 @@ STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [
 # Textanzeigen
 FONTSIZE = 20
 font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
-text_number_of_cars_in_screen = font.render('---', True, WHITE)
-TEXT_MESSAGES.append(text_number_of_cars_in_screen)
-text_max_speed_cars = text_number_of_cars_in_screen = font.render('---', True, WHITE)
-TEXT_MESSAGES.append(text_max_speed_cars)
-text_frequncy = font.render('---', True, WHITE)
-TEXT_MESSAGES.append(text_frequncy)
-text_time = text_number_of_cars_in_screen = font.render('---', True, WHITE)
-TEXT_MESSAGES.append(text_time)
-text_number_of_cars_left_screen = font.render('---', True, WHITE)
-TEXT_MESSAGES.append(text_number_of_cars_left_screen)
-text_timetable = font.render('---', True, WHITE)
-TEXT_MESSAGES.append(text_timetable)
+
+for i in range(6):
+    text_in_screen = font.render('---', True, WHITE)
+    TEXT_MESSAGES.append(text_in_screen)
+
 
 
 class Signal(pygame.sprite.Sprite):
@@ -465,7 +459,7 @@ def change_signal_to_green(signal_group, direction):
 
 
 def check_key_events():
-    global frequency, max_speed, running, debug, BACKGROUND
+    global frequency, frequency_as_level, max_speed, running, debug, BACKGROUND
 
     for event in pygame.event.get():
 
@@ -473,10 +467,12 @@ def check_key_events():
 
         if keys_pressed[pygame.K_DOWN] and frequency <= 200:
             frequency += 3
+            frequency_as_level -= 1
             print("frequency", frequency)
 
         if keys_pressed[pygame.K_UP] and frequency >= 60:
             frequency -= 3
+            frequency_as_level += 1
             print("frequency", frequency)
 
         if keys_pressed[pygame.K_RIGHT] and max_speed <= 3:
@@ -535,10 +531,10 @@ def main():
         clock.tick(FPS)
         global SPRITES, text_number_of_cars_in_screen, text_max_speed_cars
         TEXT_MESSAGES[0] = font.render('Anzahl Fahrzeuge im Bild: ' + str(len(CARS)), True, WHITE)
-        TEXT_MESSAGES[1] = font.render('Maximalgeschwindigkeit Fahrzeuge: ' + str(max_speed), True, WHITE)
-        TEXT_MESSAGES[2] = font.render('Dauer zwischen Autos: ' + str((int(frequency / 0.06))) + " ms", True, WHITE)
-        TEXT_MESSAGES[3] = font.render('Simulationsdauer: ' + str(int(time / 60)) + ":" + str(time % 60), True, WHITE)
-        TEXT_MESSAGES[4] = font.render('Anzahl Fahrzeuge ausser Bild: ' + str(number_of_cars_left), True, WHITE)
+        TEXT_MESSAGES[1] = font.render('Anzahl Fahrzeuge ausser Bild: ' + str(number_of_cars_left), True, WHITE)
+        TEXT_MESSAGES[2] = font.render('Maximalgeschwindigkeit Fahrzeuge: ' + str(max_speed), True, WHITE)
+        TEXT_MESSAGES[3] = font.render('Level Fahrzeughäufigkeit: ' + str(frequency_as_level), True, WHITE)
+        TEXT_MESSAGES[4] = font.render('Simulationsdauer: ' + str(int(time / 60)) + ":" + str(time % 60), True, WHITE)
         TEXT_MESSAGES[5] = font.render('Zeitpunkt in Timeline: ' + str(counter), True, WHITE)
 
         if counter % frequency == 0:
