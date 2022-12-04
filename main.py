@@ -68,7 +68,8 @@ SIGNALS_POS_2 = []
 SIGNALS_POS_3 = []
 STOP_AREAS = pygame.sprite.Group()
 TURN_AREAS = pygame.sprite.Group()
-TEXT_MESSAGES = []
+TEXT_MESSAGES_TITLE = []
+TEXT_MESSAGES_VALUES = []
 TIMETABLE = []
 STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [width, height * 0.47],
                [width * 0.68, height + 50], [width * 0.515, height + 50], [width * 0.345, height + 50],
@@ -78,9 +79,13 @@ STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [
 FONTSIZE = 20
 font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
 
+titles = ["Fahrzeuge im Bild:", "Fahrzeuge abgefertigt:", "Level Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
+          "Simulationsdauer:", "Zeitpunkt in Timeline:"]
 for i in range(6):
-    text_in_screen = font.render('---', True, WHITE)
-    TEXT_MESSAGES.append(text_in_screen)
+    text_message_title = font.render(titles[i], True, WHITE)
+    TEXT_MESSAGES_TITLE.append(text_message_title)
+    text_message_value = font.render('---', True, WHITE)
+    TEXT_MESSAGES_VALUES.append(text_message_value)
 
 
 
@@ -421,8 +426,12 @@ def draw_screen():
     for s in SIGNALS:
         screen.blit(s.picture, (s.rect.x, s.rect.y))
     counter = 10
-    for t in TEXT_MESSAGES:
+    for t in TEXT_MESSAGES_TITLE:
         screen.blit(t, pygame.Rect(10, counter, 200, 30))
+        counter += FONTSIZE + 10
+    counter = 10
+    for t in TEXT_MESSAGES_VALUES:
+        screen.blit(t, pygame.Rect(350, counter, 200, 30))
         counter += FONTSIZE + 10
 
     if debug:
@@ -530,12 +539,12 @@ def main():
 
         clock.tick(FPS)
         global SPRITES, text_number_of_cars_in_screen, text_max_speed_cars
-        TEXT_MESSAGES[0] = font.render('Anzahl Fahrzeuge im Bild: ' + str(len(CARS)), True, WHITE)
-        TEXT_MESSAGES[1] = font.render('Anzahl Fahrzeuge ausser Bild: ' + str(number_of_cars_left), True, WHITE)
-        TEXT_MESSAGES[2] = font.render('Maximalgeschwindigkeit Fahrzeuge: ' + str(max_speed), True, WHITE)
-        TEXT_MESSAGES[3] = font.render('Level Fahrzeughäufigkeit: ' + str(frequency_as_level), True, WHITE)
-        TEXT_MESSAGES[4] = font.render('Simulationsdauer: ' + str(int(time / 60)) + ":" + str(time % 60), True, WHITE)
-        TEXT_MESSAGES[5] = font.render('Zeitpunkt in Timeline: ' + str(counter), True, WHITE)
+        TEXT_MESSAGES_VALUES[0] = font.render(str(len(CARS)), True, WHITE)
+        TEXT_MESSAGES_VALUES[1] = font.render(str(number_of_cars_left), True, WHITE)
+        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed), True, WHITE)
+        TEXT_MESSAGES_VALUES[3] = font.render(str(frequency_as_level), True, WHITE)
+        TEXT_MESSAGES_VALUES[4] = font.render(str(int(time / 60)) + ":" + str("{:02d}".format(time % 60)), True, WHITE)
+        TEXT_MESSAGES_VALUES[5] = font.render(str(counter), True, WHITE)
 
         if counter % frequency == 0:
             for i in range(1, 9, 1):
