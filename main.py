@@ -1,6 +1,8 @@
+from datetime import datetime
 import os.path
 import random
 import pygame
+import os
 
 import signal_settings
 
@@ -533,7 +535,12 @@ def main():
         SIGNALS_POS_3.append(s)
 
     counter = 0
+    next_report = 10
     duration = signal_settings.Settings.duration
+    f = open("report.txt", "w")
+    f.write("Report zur Simulation von " + str(datetime.now().strftime("%d-%m-%Y, %H:%M:%S"))
+            + " des Users " + str(os.environ.get('USER')) + "\n")
+    f.close()
 
     while running:
 
@@ -561,6 +568,16 @@ def main():
 
         for c in CARS:
             c.move()
+
+        if number_of_cars_left >= next_report:
+            print("report")
+            f = open("report.txt", "a")
+            f.write(str(next_report) + " Autos zum Zeitpunkt "
+                    + str(int(time / 60)) + ":" + str("{:02d}".format(time % 60))
+                    + " mit Maximalgeschwindigkeit " + str(max_speed)
+                    + " und Häufigkeit " + str(frequency_as_level) + "\n")
+            f.close()
+            next_report += 10
 
         check_key_events()
         draw_screen()
