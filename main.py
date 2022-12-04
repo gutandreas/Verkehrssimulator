@@ -79,7 +79,7 @@ STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [
 FONTSIZE = 20
 font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
 
-titles = ["Fahrzeuge im Bild:", "Fahrzeuge abgefertigt:", "Level Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
+titles = ["Fahrzeuge im Bild:", "Durchgefahrene Fahrzeuge:", "Level Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
           "Simulationsdauer:", "Zeitpunkt in Timeline:"]
 for i in range(6):
     text_message_title = font.render(titles[i], True, WHITE)
@@ -308,7 +308,7 @@ class Car(pygame.sprite.Sprite):
         self.turn()
 
         if check_if_left_screen(self):
-            CARS.remove(self)
+            self.kill()
             global number_of_cars_left
             number_of_cars_left += 1
 
