@@ -1,9 +1,10 @@
+import json
 from datetime import datetime
 import os.path
 import random
 import pygame
 import os
-
+import requests
 import signal_settings
 
 pygame.init()
@@ -13,11 +14,14 @@ frequency = 100
 frequency_as_level = 35
 max_speed = 1
 distance = 15
+report_interval = 10
+
 
 time = 0
 number_of_cars_left = 0
 running = True
 debug = False
+file = None
 
 # Farben
 WHITE = (255, 255, 255)
@@ -88,7 +92,6 @@ for i in range(6):
     TEXT_MESSAGES_TITLE.append(text_message_title)
     text_message_value = font.render('---', True, WHITE)
     TEXT_MESSAGES_VALUES.append(text_message_value)
-
 
 
 class Signal(pygame.sprite.Sprite):
@@ -511,11 +514,18 @@ def check_key_events():
         if event.type == pygame.QUIT:
             running = False
 
+def send_http_request():
 
+    global file
+    url = "http://localhost:1001/ranking"
+    data = {'name': str(os.environ.get('USER')), 'cars': str(number_of_cars_left), 'time': str(time)}
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r = requests.post(url, data=json.dumps(data), headers=headers)
+    print(r)
 
 
 def main():
-    global time
+    global time, file
     clock = pygame.time.Clock()
     events = signal_settings.Settings.events
 
@@ -535,12 +545,12 @@ def main():
         SIGNALS_POS_3.append(s)
 
     counter = 0
-    next_report = 10
+    next_report = report_interval
     duration = signal_settings.Settings.duration
-    f = open("report.txt", "w")
-    f.write("Report zur Simulation von " + str(datetime.now().strftime("%d-%m-%Y, %H:%M:%S"))
+    file = open("report.txt", "w")
+    file.write("Report zur Simulation von " + str(datetime.now().strftime("%d-%m-%Y, %H:%M:%S"))
             + " des Users " + str(os.environ.get('USER')) + "\n")
-    f.close()
+    file.close()
 
     while running:
 
@@ -571,13 +581,14 @@ def main():
 
         if number_of_cars_left >= next_report:
             print("report")
-            f = open("report.txt", "a")
-            f.write(str(next_report) + " Autos zum Zeitpunkt "
+            file = open("report.txt", "a")
+            file.write(str(next_report) + " Autos zum Zeitpunkt "
                     + str(int(time / 60)) + ":" + str("{:02d}".format(time % 60))
                     + " mit Maximalgeschwindigkeit " + str(max_speed)
                     + " und Häufigkeit " + str(frequency_as_level) + "\n")
-            f.close()
-            next_report += 10
+            file.close()
+            next_report += report_interval
+            send_http_request()
 
         check_key_events()
         draw_screen()
