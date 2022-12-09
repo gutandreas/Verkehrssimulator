@@ -1,4 +1,6 @@
 import json
+import logging
+import traceback
 from datetime import datetime
 import os.path
 import random
@@ -15,6 +17,7 @@ frequency_as_level = 35
 max_speed = 1
 distance = 15
 report_interval = 10
+next_report = 0
 
 
 time = 0
@@ -514,18 +517,37 @@ def check_key_events():
         if event.type == pygame.QUIT:
             running = False
 
+def save_report():
+
+    try:
+        file = open("report.txt", "a")
+        file.write(str(next_report) + " Autos zum Zeitpunkt "
+                   + str(int(time / 60)) + ":" + str("{:02d}".format(time % 60))
+                   + " mit Maximalgeschwindigkeit " + str(max_speed)
+                   + " und Häufigkeit " + str(frequency_as_level) + "\n")
+        file.close()
+        print("Report wurde gespeichert.")
+    except Exception as e:
+        print("Report konnte nicht gespeichert werden.")
+
+
 def send_http_request():
 
     global file
-    url = "http://localhost:1001/ranking"
-    data = {'name': str(os.environ.get('USER')), 'cars': str(number_of_cars_left), 'time': str(time)}
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r = requests.post(url, data=json.dumps(data), headers=headers)
-    print(r)
+
+    try:
+        url = "http://localhost:1001/ranking"
+        data = {'name': str(os.environ.get('USER')), 'cars': str(next_report), 'time': str(time)}
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        r = requests.post(url, data=json.dumps(data), headers=headers)
+        print("Report wurde an Server geschickt.")
+    except Exception as e:
+        print("Report konnte nicht an Server geschickt werden.")
+
 
 
 def main():
-    global time, file
+    global time, file, next_report
     clock = pygame.time.Clock()
     events = signal_settings.Settings.events
 
@@ -580,15 +602,9 @@ def main():
             c.move()
 
         if number_of_cars_left >= next_report:
-            print("report")
-            file = open("report.txt", "a")
-            file.write(str(next_report) + " Autos zum Zeitpunkt "
-                    + str(int(time / 60)) + ":" + str("{:02d}".format(time % 60))
-                    + " mit Maximalgeschwindigkeit " + str(max_speed)
-                    + " und Häufigkeit " + str(frequency_as_level) + "\n")
-            file.close()
-            next_report += report_interval
+            save_report()
             send_http_request()
+            next_report += report_interval
 
         check_key_events()
         draw_screen()
