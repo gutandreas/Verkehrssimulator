@@ -1,6 +1,4 @@
 import json
-import logging
-import traceback
 from datetime import datetime
 import os.path
 import random
@@ -89,7 +87,7 @@ STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [
 FONTSIZE = 20
 font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
 
-titles = ["Fahrzeuge im Bild:", "Durchgefahrene Fahrzeuge:", "Level Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
+titles = ["Fahrzeuge im Bild:", "Durchgefahrene Fahrzeuge:", "Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
           "Simulationsdauer:", "Zeitpunkt in Timeline:"]
 for i in range(6):
     text_message_title = font.render(titles[i], True, WHITE)
@@ -524,7 +522,7 @@ def save_report():
         file = open("report.txt", "a")
         file.write(str(next_report) + " Autos zum Zeitpunkt "
                    + str(int(time / 60)) + ":" + str("{:02d}".format(time % 60))
-                   + " mit Maximalgeschwindigkeit " + str(max_speed)
+                   + " mit Maximalgeschwindigkeit " + str(max_speed*20)
                    + " und Häufigkeit " + str(frequency_as_level) + "\n")
         file.close()
         print("Report wurde gespeichert.")
@@ -581,7 +579,7 @@ def main():
         global SPRITES, text_number_of_cars_in_screen, text_max_speed_cars
         TEXT_MESSAGES_VALUES[0] = font.render(str(len(CARS)), True, WHITE)
         TEXT_MESSAGES_VALUES[1] = font.render(str(number_of_cars_left), True, WHITE)
-        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed), True, WHITE)
+        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed*20), True, WHITE)
         TEXT_MESSAGES_VALUES[3] = font.render(str(frequency_as_level), True, WHITE)
         TEXT_MESSAGES_VALUES[4] = font.render(str(int(time / 60)) + ":" + str("{:02d}".format(time % 60)), True, WHITE)
         TEXT_MESSAGES_VALUES[5] = font.render(str(counter), True, WHITE)
@@ -612,6 +610,8 @@ def main():
 
         if counter >= duration:
             counter = 0
+
+
 
 
 if __name__ == "__main__":
