@@ -18,6 +18,7 @@ max_speed = 1
 distance = 15
 report_interval = 10
 next_report = 0
+server_ip = "217.160.10.113:1001"
 
 
 time = 0
@@ -536,7 +537,7 @@ def send_http_request():
     global file
 
     try:
-        url = "http://localhost:1001/ranking"
+        url = "http://" + server_ip + "/ranking"
         data = {'name': str(os.environ.get('USER')), 'cars': str(next_report), 'time': str(time)}
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         r = requests.post(url, data=json.dumps(data), headers=headers)
