@@ -99,7 +99,7 @@ for i in range(6):
     text_message_value = font.render('---', True, GREY)
     TEXT_MESSAGES_VALUES.append(text_message_value)
 
-hints = ["Fahrzeughäufigkeit ändern: ↑/↓", "Maximalgeschwindigkeiten ändern: ←/→", "Hintergründe: 1, 2", "Cars: d/f"]
+hints = ["Fahrzeughäufigkeit ändern: ↑/↓", "Maximalgeschwindigkeiten ändern: ←/→", "Hintergründe: 1/2/3", "Autos: d/f"]
 
 for i in range(4):
     text_message_hint = font.render(hints[i], True, GREEN_YELLOW)
@@ -521,10 +521,14 @@ def check_key_events():
             debug = False
 
         if keys_pressed[pygame.K_1]:
-            BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
+            BACKGROUND = pygame.image.load(os.path.join("bilder", "background3.png"))
             BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
 
         if keys_pressed[pygame.K_2]:
+            BACKGROUND = pygame.image.load(os.path.join("bilder", "background.png"))
+            BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
+
+        if keys_pressed[pygame.K_3]:
             BACKGROUND = pygame.image.load(os.path.join("bilder", "background2.png"))
             BACKGROUND = pygame.transform.scale(BACKGROUND, (width, height))
 
@@ -592,12 +596,12 @@ def main():
 
         clock.tick(FPS)
         global SPRITES, text_number_of_cars_in_screen, text_max_speed_cars
-        TEXT_MESSAGES_VALUES[0] = font.render(str(len(CARS)), True, WHITE)
-        TEXT_MESSAGES_VALUES[1] = font.render(str(number_of_cars_left), True, WHITE)
-        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed*20), True, WHITE)
-        TEXT_MESSAGES_VALUES[3] = font.render(str(frequency_as_level), True, WHITE)
-        TEXT_MESSAGES_VALUES[4] = font.render(str(int(time / 60)) + ":" + str("{:02d}".format(time % 60)), True, WHITE)
-        TEXT_MESSAGES_VALUES[5] = font.render(str(counter), True, WHITE)
+        TEXT_MESSAGES_VALUES[0] = font.render(str(len(CARS)), True, GREY)
+        TEXT_MESSAGES_VALUES[1] = font.render(str(number_of_cars_left), True, GREY)
+        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed*20), True, GREY)
+        TEXT_MESSAGES_VALUES[3] = font.render(str(frequency_as_level), True, GREY)
+        TEXT_MESSAGES_VALUES[4] = font.render(str(int(time / 60)) + ":" + str("{:02d}".format(time % 60)), True, GREY)
+        TEXT_MESSAGES_VALUES[5] = font.render(str(counter), True, GREY)
 
         if counter % frequency == 0:
             for i in range(1, 9, 1):
