@@ -5,6 +5,9 @@ from main import Event_Green
 
 class Templates:
 
+    event_collection = []
+    duration_collection = []
+
     events1 =  [
         Event_Green(1, 1, 100),
         Event_Green(2, 1, 100),
@@ -49,3 +52,12 @@ class Templates:
 
     duration1 = 501
     duration2 = 201
+
+    event_collection.append(events1)
+    event_collection.append(events2)
+    duration_collection.append(duration1)
+    duration_collection.append(duration2)
+
+
+    def get_events(number):
+        return Templates.event_collection[number-1], Templates.duration_collection[number-1]
