@@ -12,9 +12,9 @@ pygame.init()
 # Simulationsparameter
 frequency = 100
 frequency_as_level = 35
-max_speed = 1
+max_speed = 4
 distance = 15
-report_interval = 10
+report_interval = 50
 next_report = 0
 server_ip = "217.160.10.113:1001"
 
@@ -29,6 +29,8 @@ file = None
 WHITE = (255, 255, 255)
 GREEN = (100, 255, 100)
 BLUE = (100, 100, 255)
+GREEN_YELLOW = (190, 255, 110)
+GREY = (230, 230, 230)
 FPS = 30
 
 # Fenster
@@ -78,6 +80,7 @@ STOP_AREAS = pygame.sprite.Group()
 TURN_AREAS = pygame.sprite.Group()
 TEXT_MESSAGES_TITLE = []
 TEXT_MESSAGES_VALUES = []
+TEXT_MESSAGES_HINTS = []
 TIMETABLE = []
 STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [width, height * 0.47],
                [width * 0.68, height + 50], [width * 0.515, height + 50], [width * 0.345, height + 50],
@@ -85,15 +88,23 @@ STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [
 
 # Textanzeigen
 FONTSIZE = 20
-font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
+#font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
+font = pygame.font.SysFont('arial black', FONTSIZE)
 
 titles = ["Fahrzeuge im Bild:", "Durchgefahrene Fahrzeuge:", "Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
           "Simulationsdauer:", "Zeitpunkt in Timeline:"]
 for i in range(6):
-    text_message_title = font.render(titles[i], True, WHITE)
+    text_message_title = font.render(titles[i], True, GREY)
     TEXT_MESSAGES_TITLE.append(text_message_title)
-    text_message_value = font.render('---', True, WHITE)
+    text_message_value = font.render('---', True, GREY)
     TEXT_MESSAGES_VALUES.append(text_message_value)
+
+hints = ["Fahrzeughäufigkeit ändern: ↑/↓", "Maximalgeschwindigkeiten ändern: ←/→", "Hintergründe: 1, 2", "Cars: d/f"]
+
+for i in range(4):
+    text_message_hint = font.render(hints[i], True, GREEN_YELLOW)
+    TEXT_MESSAGES_HINTS.append(text_message_hint)
+
 
 
 class Signal(pygame.sprite.Sprite):
@@ -432,13 +443,17 @@ def draw_screen():
           pygame.draw.rect(screen, (255, 0, 0), c.rect)
     for s in SIGNALS:
         screen.blit(s.picture, (s.rect.x, s.rect.y))
-    counter = 10
+    counter = 0
     for t in TEXT_MESSAGES_TITLE:
         screen.blit(t, pygame.Rect(10, counter, 200, 30))
         counter += FONTSIZE + 10
-    counter = 10
+    counter = 0
     for t in TEXT_MESSAGES_VALUES:
         screen.blit(t, pygame.Rect(350, counter, 200, 30))
+        counter += FONTSIZE + 10
+    counter = 0
+    for t in TEXT_MESSAGES_HINTS:
+        screen.blit(t, pygame.Rect(1090, counter, 200, 30))
         counter += FONTSIZE + 10
 
     if debug:

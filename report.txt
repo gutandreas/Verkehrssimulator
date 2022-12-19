@@ -1,8 +1,6 @@
-Report zur Simulation von 14-12-2022, 16:03:40 des Users andreasgut
-10 Autos zum Zeitpunkt 0:13 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
-20 Autos zum Zeitpunkt 0:17 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
-30 Autos zum Zeitpunkt 0:19 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
-40 Autos zum Zeitpunkt 0:23 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
-50 Autos zum Zeitpunkt 0:25 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
-60 Autos zum Zeitpunkt 0:28 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
-70 Autos zum Zeitpunkt 0:30 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
+Report zur Simulation von 19-12-2022, 13:51:00 des Users andreasgut
+50 Autos zum Zeitpunkt 0:24 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
+100 Autos zum Zeitpunkt 0:42 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
+150 Autos zum Zeitpunkt 0:55 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
+200 Autos zum Zeitpunkt 1:10 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
+250 Autos zum Zeitpunkt 1:27 mit Maximalgeschwindigkeit 80 und Häufigkeit 35
