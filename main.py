@@ -11,13 +11,12 @@ pygame.init()
 
 # Simulationsparameter
 frequency = 100
-frequency_as_level = 35
+frequency_as_level = 49
 max_speed = 4
 distance = 15
 report_interval = 50
 next_report = 0
 server_ip = "217.160.10.113:1001"
-
 
 time = 0
 number_of_cars_left = 0
@@ -62,7 +61,8 @@ CAR_PICTURE_ORANGE = pygame.transform.scale(CAR_PICTURE_ORANGE, CAR_DIMENSIONS)
 CAR_PICTURE_LEMON = pygame.image.load(os.path.join("bilder", "auto_limone.png"))
 CAR_PICTURE_LEMON = pygame.transform.scale(CAR_PICTURE_LEMON, CAR_DIMENSIONS)
 
-CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE, CAR_PICTURE_GREEN, CAR_PICTURE_CYAN, CAR_PICTURE_PURPLE, CAR_PICTURE_ORANGE, CAR_PICTURE_LEMON]
+CAR_PICTURES = [CAR_PICTURE_RED, CAR_PICTURE_YELLOW, CAR_PICTURE_BLUE, CAR_PICTURE_GREEN, CAR_PICTURE_CYAN,
+                CAR_PICTURE_PURPLE, CAR_PICTURE_ORANGE, CAR_PICTURE_LEMON]
 
 SIGNAL_PICTURE_RED = pygame.image.load(os.path.join("bilder", "ampel_rot.png"))
 SIGNAL_PICTURE_RED = pygame.transform.scale(SIGNAL_PICTURE_RED, SIGNAL_DIMENSIONS)
@@ -88,7 +88,6 @@ STARTPOINTS = [[width * 0.31, -50], [width * 0.475, -50], [width * 0.64, -50], [
 
 # Textanzeigen
 FONTSIZE = 20
-#font = pygame.font.Font(pygame.font.get_default_font(), FONTSIZE)
 font = pygame.font.SysFont('arial black', FONTSIZE)
 
 titles = ["Fahrzeuge im Bild:", "Durchgefahrene Fahrzeuge:", "Maximalgeschwindigkeit:", "Level Fahrzeughäufigkeit:",
@@ -104,7 +103,6 @@ hints = ["Fahrzeughäufigkeit ändern: ↑/↓", "Maximalgeschwindigkeiten ände
 for i in range(4):
     text_message_hint = font.render(hints[i], True, GREEN_YELLOW)
     TEXT_MESSAGES_HINTS.append(text_message_hint)
-
 
 
 class Signal(pygame.sprite.Sprite):
@@ -129,29 +127,45 @@ class Signal(pygame.sprite.Sprite):
             self.position_coordinates = [width * 0.65, height * 0.465]
 
         if direction == 1:
-            self.position_coordinates = [self.position_coordinates[0] - signal_distance * 0.65, self.position_coordinates[1] - signal_distance * 0.8]
+            self.position_coordinates = [self.position_coordinates[0] - signal_distance * 0.65,
+                                         self.position_coordinates[1] - signal_distance * 0.8]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 180)
-            self.stop_area = StopArea((self.position_coordinates[0] + 50, self.position_coordinates[1] + 20), STOP_AREA_DIMENSION_DIRECTION_1_3)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 93), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 150), TURN_AREA_DIMENSION, self)
+            self.stop_area = StopArea((self.position_coordinates[0] + 50, self.position_coordinates[1] + 20),
+                                      STOP_AREA_DIMENSION_DIRECTION_1_3)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 93),
+                                       TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] + 60, self.position_coordinates[1] + 150),
+                                       TURN_AREA_DIMENSION, self)
         elif direction == 2:
-            self.position_coordinates = [self.position_coordinates[0] + signal_distance * 0.85, self.position_coordinates[1] - signal_distance * 0.5]
+            self.position_coordinates = [self.position_coordinates[0] + signal_distance * 0.85,
+                                         self.position_coordinates[1] - signal_distance * 0.5]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 90)
-            self.stop_area = StopArea((self.position_coordinates[0] + 20, self.position_coordinates[1] + 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] - 40, self.position_coordinates[1] + 60), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] - 95, self.position_coordinates[1] + 60), TURN_AREA_DIMENSION, self)
+            self.stop_area = StopArea((self.position_coordinates[0] + 20, self.position_coordinates[1] + 40),
+                                      STOP_AREA_DIMENSION_DIRECTION_2_4)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] - 40, self.position_coordinates[1] + 60),
+                                       TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] - 95, self.position_coordinates[1] + 60),
+                                       TURN_AREA_DIMENSION, self)
         elif direction == 3:
-            self.position_coordinates = [self.position_coordinates[0] + signal_distance * 0.85, self.position_coordinates[1] + signal_distance * 1]
+            self.position_coordinates = [self.position_coordinates[0] + signal_distance * 0.85,
+                                         self.position_coordinates[1] + signal_distance * 1]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 0)
-            self.stop_area = StopArea((self.position_coordinates[0] - 50, self.position_coordinates[1] + 20), STOP_AREA_DIMENSION_DIRECTION_1_3)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] - 35, self.position_coordinates[1] - 40), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] - 35, self.position_coordinates[1] - 80), TURN_AREA_DIMENSION, self)
+            self.stop_area = StopArea((self.position_coordinates[0] - 50, self.position_coordinates[1] + 20),
+                                      STOP_AREA_DIMENSION_DIRECTION_1_3)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] - 35, self.position_coordinates[1] - 40),
+                                       TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] - 35, self.position_coordinates[1] - 80),
+                                       TURN_AREA_DIMENSION, self)
         elif direction == 4:
-            self.position_coordinates = [self.position_coordinates[0] - signal_distance * 0.95, self.position_coordinates[1] + signal_distance * 1]
+            self.position_coordinates = [self.position_coordinates[0] - signal_distance * 0.95,
+                                         self.position_coordinates[1] + signal_distance * 1]
             self.picture = pygame.transform.rotate(SIGNAL_PICTURE_RED, 270)
-            self.stop_area = StopArea((self.position_coordinates[0] + 30, self.position_coordinates[1] - 40), STOP_AREA_DIMENSION_DIRECTION_2_4)
-            self.turn_area1 = TurnArea((self.position_coordinates[0] + 90, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
-            self.turn_area2 = TurnArea((self.position_coordinates[0] + 145, self.position_coordinates[1] - 35), TURN_AREA_DIMENSION, self)
+            self.stop_area = StopArea((self.position_coordinates[0] + 30, self.position_coordinates[1] - 40),
+                                      STOP_AREA_DIMENSION_DIRECTION_2_4)
+            self.turn_area1 = TurnArea((self.position_coordinates[0] + 90, self.position_coordinates[1] - 35),
+                                       TURN_AREA_DIMENSION, self)
+            self.turn_area2 = TurnArea((self.position_coordinates[0] + 145, self.position_coordinates[1] - 35),
+                                       TURN_AREA_DIMENSION, self)
 
         self.rect = self.picture.get_rect()
         self.rect.x = self.position_coordinates[0]
@@ -301,9 +315,9 @@ class Car(pygame.sprite.Sprite):
                 point_to_check = self.rect.midright
 
             for c in collision_with:
-              if c.rect.collidepoint(point_to_check):
-                road_free = False
-                break
+                if c.rect.collidepoint(point_to_check):
+                    road_free = False
+                    break
 
         if self.speed < max_speed:
             self.speed += 0.2
@@ -388,7 +402,6 @@ class Car(pygame.sprite.Sprite):
                         if self.direction == 4:
                             self.rect.x = STARTPOINTS[6][0]
 
-
                     # Ampel 2
                     if a.signal.position == 2:
                         if self.direction == 1:
@@ -413,9 +426,8 @@ class Car(pygame.sprite.Sprite):
 
                     self.direction = (self.direction - 1) % 4
                     self.picture = pygame.transform.rotate(self.picture, 90)
-                    self.rect = self.picture.get_rect(topleft = self.rect.topleft)
+                    self.rect = self.picture.get_rect(topleft=self.rect.topleft)
                     self.next_direction_random_number = random.randrange(3)
-
 
 
 class Event_Green():
@@ -440,7 +452,7 @@ def draw_screen():
     for c in CARS:
         screen.blit(c.picture, (c.rect.x, c.rect.y))
         if debug:
-          pygame.draw.rect(screen, (255, 0, 0), c.rect)
+            pygame.draw.rect(screen, (255, 0, 0), c.rect)
     for s in SIGNALS:
         screen.blit(s.picture, (s.rect.x, s.rect.y))
     counter = 0
@@ -457,10 +469,10 @@ def draw_screen():
         counter += FONTSIZE + 10
 
     if debug:
-      for t in TURN_AREAS:
-          pygame.draw.rect(screen, (255, 0, 0), t)
-      for s in STOP_AREAS:
-           pygame.draw.rect(screen, (255, 255, 255), s)
+        for t in TURN_AREAS:
+            pygame.draw.rect(screen, (255, 0, 0), t)
+        for s in STOP_AREAS:
+            pygame.draw.rect(screen, (255, 255, 255), s)
     pygame.display.update()
 
 
@@ -535,13 +547,13 @@ def check_key_events():
         if event.type == pygame.QUIT:
             running = False
 
-def save_report():
 
+def save_report():
     try:
         file = open("report.txt", "a")
         file.write(str(next_report) + " Autos zum Zeitpunkt "
                    + str(int(time / 60)) + ":" + str("{:02d}".format(time % 60))
-                   + " mit Maximalgeschwindigkeit " + str(max_speed*20)
+                   + " mit Maximalgeschwindigkeit " + str(max_speed * 20)
                    + " und Häufigkeit " + str(frequency_as_level) + "\n")
         file.close()
         print("Report wurde gespeichert.")
@@ -550,7 +562,6 @@ def save_report():
 
 
 def send_http_request():
-
     global file
 
     try:
@@ -561,7 +572,6 @@ def send_http_request():
         print("Report wurde an Server geschickt.")
     except Exception as e:
         print("Report konnte nicht an Server geschickt werden.")
-
 
 
 def main():
@@ -589,7 +599,7 @@ def main():
     duration = signal_settings.Settings.duration
     file = open("report.txt", "w")
     file.write("Report zur Simulation von " + str(datetime.now().strftime("%d-%m-%Y, %H:%M:%S"))
-            + " des Users " + str(os.environ.get('USER')) + "\n")
+               + " des Users " + str(os.environ.get('USER')) + "\n")
     file.close()
 
     while running:
@@ -598,7 +608,7 @@ def main():
         global SPRITES, text_number_of_cars_in_screen, text_max_speed_cars
         TEXT_MESSAGES_VALUES[0] = font.render(str(len(CARS)), True, GREY)
         TEXT_MESSAGES_VALUES[1] = font.render(str(number_of_cars_left), True, GREY)
-        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed*20), True, GREY)
+        TEXT_MESSAGES_VALUES[2] = font.render(str(max_speed * 20), True, GREY)
         TEXT_MESSAGES_VALUES[3] = font.render(str(frequency_as_level), True, GREY)
         TEXT_MESSAGES_VALUES[4] = font.render(str(int(time / 60)) + ":" + str("{:02d}".format(time % 60)), True, GREY)
         TEXT_MESSAGES_VALUES[5] = font.render(str(counter), True, GREY)
@@ -629,8 +639,6 @@ def main():
 
         if counter >= duration:
             counter = 0
-
-
 
 
 if __name__ == "__main__":
