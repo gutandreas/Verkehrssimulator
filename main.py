@@ -1,3 +1,4 @@
+import getpass
 import json
 from datetime import datetime
 import os.path
@@ -566,9 +567,10 @@ def send_http_request():
 
     try:
         url = "http://" + server_ip + "/ranking"
-        data = {'name': str(os.environ.get('USER')), 'cars': str(next_report), 'time': str(time)}
+        user = str(getpass.getuser())
+        data = {'name': user, 'cars': str(next_report), 'time': str(time)}
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        r = requests.post(url, data=json.dumps(data), headers=headers)
+        requests.post(url, data=json.dumps(data), headers=headers)
         print("Report wurde an Server geschickt.")
     except Exception as e:
         print("Report konnte nicht an Server geschickt werden.")
