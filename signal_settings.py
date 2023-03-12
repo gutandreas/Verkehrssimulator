@@ -5,7 +5,7 @@ from main import Event_Green
 class Settings:
     # Wählen ob Schaltplan nach Vorlage (True = Vorlage, False = Eigener Schaltplan)
     use_templates = True
-    template_number = 2
+    template_number = 1
 
     # Eigener Schaltplan: Füge für jede Ampel, die auf grün wechseln soll, einen Event_Green zur Liste hinzu
     own_events = [
