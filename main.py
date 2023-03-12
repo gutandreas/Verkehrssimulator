@@ -12,7 +12,7 @@ pygame.init()
 
 # Simulationsparameter
 frequency = 100
-frequency_as_level = 49
+frequency_as_level = 55
 max_speed = 4
 distance = 15
 report_interval = 50

@@ -1,26 +1,5 @@
-Report zur Simulation von 07-03-2023, 12:34:25 des Users andreasgut
-5 Autos zum Zeitpunkt 0:09 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-10 Autos zum Zeitpunkt 0:13 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-15 Autos zum Zeitpunkt 0:14 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-20 Autos zum Zeitpunkt 0:17 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-25 Autos zum Zeitpunkt 0:18 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-30 Autos zum Zeitpunkt 0:20 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-35 Autos zum Zeitpunkt 0:21 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-40 Autos zum Zeitpunkt 0:22 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-45 Autos zum Zeitpunkt 0:23 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-50 Autos zum Zeitpunkt 0:24 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-55 Autos zum Zeitpunkt 0:26 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-60 Autos zum Zeitpunkt 0:27 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-65 Autos zum Zeitpunkt 0:28 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-70 Autos zum Zeitpunkt 0:29 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-75 Autos zum Zeitpunkt 0:30 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-80 Autos zum Zeitpunkt 0:32 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-85 Autos zum Zeitpunkt 0:33 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-90 Autos zum Zeitpunkt 0:35 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-95 Autos zum Zeitpunkt 0:38 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
+Report zur Simulation von 12-03-2023, 12:14:04 des Users andreasgut
+50 Autos zum Zeitpunkt 0:25 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
 100 Autos zum Zeitpunkt 0:39 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-105 Autos zum Zeitpunkt 0:40 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-110 Autos zum Zeitpunkt 0:40 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-115 Autos zum Zeitpunkt 0:42 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-120 Autos zum Zeitpunkt 0:44 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
-125 Autos zum Zeitpunkt 0:46 mit Maximalgeschwindigkeit 80 und Häufigkeit 49
+150 Autos zum Zeitpunkt 0:53 mit Maximalgeschwindigkeit 80 und Häufigkeit 55
+200 Autos zum Zeitpunkt 1:11 mit Maximalgeschwindigkeit 80 und Häufigkeit 55
