@@ -600,8 +600,9 @@ def main():
     next_report = report_interval
     duration = signal_settings.Settings.duration
     file = open("report.txt", "w")
+    user = str(getpass.getuser())
     file.write("Report zur Simulation von " + str(datetime.now().strftime("%d-%m-%Y, %H:%M:%S"))
-               + " des Users " + str(os.environ.get('USER')) + "\n")
+               + " des Users " + user + "\n")
     file.close()
 
     while running:
