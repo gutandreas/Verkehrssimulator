@@ -565,15 +565,41 @@ def save_report():
 def send_http_request():
     global file
 
-    try:
-        url = "http://" + server_ip + "/ranking"
-        user = str(getpass.getuser())
-        data = {'name': user, 'cars': str(next_report), 'time': str(time)}
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        requests.post(url, data=json.dumps(data), headers=headers)
-        print("Report wurde an Server geschickt.")
-    except Exception as e:
-        print("Report konnte nicht an Server geschickt werden.")
+    if check_settings():
+        try:
+            url = "http://" + server_ip + "/ranking"
+            user = str(getpass.getuser())
+            data = {'name': user, 'cars': str(next_report), 'time': str(time)}
+            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            requests.post(url, data=json.dumps(data), headers=headers)
+            print("Report wurde an Server geschickt.")
+        except Exception as e:
+            print("Report konnte nicht an Server geschickt werden.")
+    else:
+        print("Die Daten in der main-Datei wurden manipuliert. Der Report wird darum nicht gesendet.")
+
+def check_settings():
+    global frequency, frequency_as_level, max_speed, distance, report_interval
+
+    if frequency != 100:
+        return False
+
+    if frequency_as_level != 60:
+        return False
+
+    if max_speed != 4:
+        return False
+
+    if distance != 15:
+        return False
+
+    if report_interval != 50:
+        return False
+
+    return True
+
+
+
 
 
 def main():
